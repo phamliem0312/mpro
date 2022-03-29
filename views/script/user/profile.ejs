@@ -1,0 +1,82 @@
+<script>
+  function profile_get() {
+    let req_data='';
+    gw_gui_call_api('GET', '/api/profile/get', req_data, null, function (status, data, xhr) {
+      if ('success' == status) {
+        document.getElementById("username_view").value = data.result.username;
+        document.getElementById("role_id_view").value = data.result.role_id;
+        document.getElementById("first_name_view").value = data.result.first_name;
+        document.getElementById("last_name_view").value = data.result.last_name;
+        document.getElementById("phone_view").value = data.result.phone;
+        document.getElementById("position_view").value = data.result.position;
+        document.getElementById("status_view").value = data.result.status;
+        document.getElementById("last_login_view").value = data.result.last_login;
+
+        document.getElementById("first_name_edit").value = data.result.first_name;
+        document.getElementById("last_name_edit").value = data.result.last_name;
+        document.getElementById("phone_edit").value = data.result.phone;
+        document.getElementById("position_edit").value = data.result.position;
+      }
+      else {
+        console.log(data);
+        alert(xhr.responseJSON.msg);
+      }
+    });
+  }
+
+  function profile_edit_info() {
+    if (confirm('are you sure?')) {
+      let req_data = {};
+      req_data.first_name = document.getElementById("first_name_edit").value;
+      req_data.last_name = document.getElementById("last_name_edit").value;
+      req_data.phone = document.getElementById("phone_edit").value;
+      req_data.position = document.getElementById("position_edit").value;
+      console.log(req_data);
+      gw_gui_call_api('POST', '/api/profile/edit_info', req_data, null, function (status, data, xhr) {
+        if ('success' == status) {
+          alert('success');
+          profile_get();
+        }
+        else {
+          console.log(data);
+          alert(xhr.responseJSON.msg);
+        }
+      });
+    }
+  }
+
+  function profile_change_pass() {
+    if (confirm('are you sure?')) {
+      let req_data = {};
+      req_data.password_old = document.getElementById("password_old_edit").value;
+      req_data.password = document.getElementById("password_edit").value;
+      req_data.password_repeat = document.getElementById("password_repeat_edit").value;
+      gw_gui_call_api('POST', '/api/profile/change_password', req_data, null, function (status, data, xhr) {
+        if ('success' == status) {
+          //alert('Success');
+          alert('Đã tạo thành công hồ sơ');
+        }
+        else {
+          console.log(xhr.responseJSON);
+          alert(xhr.responseJSON.msg);
+        }
+      });
+    }
+  }
+
+  function open_tab(evt, tab_name) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(tab_name).style.display = "block";
+    evt.currentTarget.className += " active";
+  }
+  document.getElementById('detail_info').style.display = "block";
+  profile_get();
+</script>

@@ -1,0 +1,172 @@
+<div class="row">
+    <div class="col-sm-6">
+      <div class="well">
+          <div class="row">
+            <div class="col-sm-3">
+            </div>
+            <div class="col-sm-3">
+            </div>
+            <div class="col-sm-3">
+              <label class="control-label">IP</label>
+              <input type="text" class="form-control" id="username_query">
+            </div>
+            <div class="col-sm-3">
+              <label class="control-label">Tìm</label>
+              <button type="submit" class="btn fis form-control" id="btn_query" onclick="user_get_list();">
+                <span class="glyphicon glyphicon-search"></span>
+                Tìm
+              </button>
+            </div>
+          </div>
+        <br />
+        <table class="table table-hover" id="user_table">
+          <thead class="">
+            <tr style="background-color: #4d4d4d; color: aliceblue;">
+              <th scope="col">STT</th>
+              <th scope="col">IP</th>
+              <th scope="col">Tên</th>
+              <th scope="col">Hiệu lực</th>
+            </tr>
+          </thead>
+          <tbody id=user_tbody>
+            <tr>
+              <td scope="col">1</td>
+              <td scope="col">10.1.100.1</td>
+              <td scope="col">Mpro</td>
+              <td scope="col">✓</td>
+            </tr>
+            <tr>
+              <td scope="col">2</td>
+              <td scope="col">10.1.100.2</td>
+              <td scope="col">MyMobiFone</td>
+              <td scope="col">✓</td>
+            </tr>
+            <tr>
+              <td scope="col">3</td>
+              <td scope="col">10.1.100.3</td>
+              <td scope="col">Unknown</td>
+              <td scope="col">✗</td>
+            </tr>
+            <tr>
+              <td scope="col">4</td>
+              <td scope="col">10.1.100.4</td>
+              <td scope="col">Mpro</td>
+              <td scope="col">✓</td>
+            </tr>
+            <tr>
+              <td scope="col">5</td>
+              <td scope="col">10.1.100.5</td>
+              <td scope="col">MyMobiFone</td>
+              <td scope="col">✓</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="text-right" id="pagination-here"></div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="row">
+        <div class="well">
+          <div class="row">
+            <div class="col-sm-3">
+              <button id="create" class="btn fis form-control" onclick="user_create_show()">
+                <span class="glyphicon glyphicon-plus"></span>
+                Thêm
+              </button>
+            </div>
+            <div class="col-sm-3">
+              <button id="edit" class="btn fis form-control" onclick="user_edit_show()">
+                <span class="glyphicon glyphicon-edit"></span>
+                Sửa
+              </button>
+            </div>
+            <div class="col-sm-6"></div>
+          </div>
+          <div id="create_box">
+            <div class="row">
+              <div class="col-sm-6">
+                <label class="control-label">IP</label>
+                <input type="text" class="form-control" id="ip_create">
+              </div>
+              <div class="col-sm-6">
+                <label class="control-label">Cổng</label>
+                <input type="text" class="form-control" id="port_create">
+              </div>
+              <div class="col-sm-6">
+                <label class="control-label">Tài khoản</label>
+                <input type="text" class="form-control" id="account_create">
+              </div>
+              <div class="col-sm-6">
+                <label class="control-label">Mật khẩu</label>
+                <input type="text" class="form-control" id="password_create">
+              </div>
+              <div class="col-sm-6">
+                <label class="control-label">Tên</label>
+                <input type="text" class="form-control" id="name_create">
+              </div>
+              <div class="col-sm-6">
+                <label class="control-label">Trạng thái</label>
+                <select class="form-control" id="status_create">
+                  <option value=""></option>
+                  <option value="1">Hiệu lực</option>
+                  <option value="0">Hết hiệu lực</option>
+              </select>
+              </div>
+            </div>
+            <br />
+            <div class="row">
+              <div class="col-sm-3"></div>
+              <div class="col-sm-6"></div>
+              <div class="col-sm-3">
+                <button class="btn fis form-control" onclick="user_create();" >
+                  <span class="glyphicon glyphicon-save"></span>
+                  Lưu</button>
+              </div>
+            </div>
+          </div>
+          <div id="edit_box">
+            <div class="row">
+              <div class="col-sm-6">
+                <label class="control-label">IP</label>
+                <input type="text" class="form-control" id="ip_edit">
+              </div>
+              <div class="col-sm-6">
+                <label class="control-label">Cổng</label>
+                <input type="text" class="form-control" id="port_edit">
+              </div>
+              <div class="col-sm-6">
+                <label class="control-label">Tài khoản</label>
+                <input type="text" class="form-control" id="account_edit">
+              </div>
+              <div class="col-sm-6">
+                <label class="control-label">Mật khẩu</label>
+                <input type="text" class="form-control" id="password_edit">
+              </div>
+              <div class="col-sm-6">
+                <label class="control-label">Tên</label>
+                <input type="text" class="form-control" id="name_edit">
+              </div>
+              <div class="col-sm-6">
+                <label class="control-label">Trạng thái</label>
+                <select class="form-control" id="status_edit">
+                  <option selected disabled hidden></option>
+                  <option value="1">Hiệu lực</option>
+                  <option value="0">Hết hiệu lực</option>
+              </select>
+              </div>
+            </div>
+            <br />
+            <div class="row">
+              <div class="col-sm-3"></div>
+              <div class="col-sm-6"></div>
+              <div class="col-sm-3">
+                <button class="btn fis form-control" onclick="user_edit();" >
+                  <span class="glyphicon glyphicon-save"></span>
+                  Lưu</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

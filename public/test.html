@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="/vendor/jquery/jquery.min.js"></script>
+  <link href="/vendor/bootstrap/bootstrap-3.4.1-dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="/vendor/bootstrap/bootstrap-3.4.1-dist/js/bootstrap.min.js"></script>
+  
+
+  <script src="/js/gw_gui.js"></script>
+  
+  <script>
+    var req_data;
+    var header_data;
+    var url_data;
+    var type_data;
+
+    function init_prosesor() {
+      req_data = JSON.stringify({
+        "username": "truong1",
+        "password": "123456"
+      });
+      header_data = { 'Content-Type': 'application/json' };
+      url_data = '/api/user/login';
+      document.getElementById("url_data").value = url_data;
+      document.getElementById("req_data").value = req_data;
+      document.getElementById("header_data").value = JSON.stringify(header_data);
+    };
+    function collect_input() {
+      type_data = document.getElementById("method_select").value;
+      url_data = document.getElementById("url_data").value;
+      req_data = document.getElementById("req_data").value;
+      try {
+        header_data = JSON.parse(document.getElementById("header_data").value);
+      }
+      catch (err) {
+        header_data = { 'Content-Type': 'application/json' };
+      }
+    }
+    function test_prosesor(type_input) {
+      collect_input();
+      if ('POST' == type_input || 'GET' == type_input) {
+        type_data = type_input;
+      }
+      gw_gui_call_api(type_data, url_data, req_data, header_data, function (status, data, xhr) {
+        if ('success' == status) {
+          document.getElementById("res_data").value = JSON.stringify(data);
+          document.getElementById("stt_data").value = JSON.stringify(status);
+          document.getElementById("stt_code").value = JSON.stringify(xhr.status);
+          document.getElementById("stt_text").value = JSON.stringify(xhr.statusText);
+          document.getElementById("xhr_data").value = JSON.stringify(xhr);
+        }
+        else {
+          document.getElementById("res_data").value = JSON.stringify(xhr.responseJSON);
+          document.getElementById("stt_data").value = JSON.stringify(status);
+          document.getElementById("stt_code").value = JSON.stringify(xhr.status);
+          document.getElementById("stt_text").value = JSON.stringify(xhr.statusText);
+          document.getElementById("xhr_data").value = JSON.stringify(xhr);
+        }
+      });
+    }
+
+    function clear_all() {
+      clear_req();
+      clear_res();
+    }
+    function clear_req() {
+      document.getElementById("url_data").value = '';
+      document.getElementById("req_data").value = '';
+      document.getElementById("header_data").value = '';
+    }
+    function clear_res() {
+      document.getElementById("res_data").value = '';
+      document.getElementById("stt_data").value = '';
+      document.getElementById("stt_code").value = '';
+      document.getElementById("stt_text").value = '';
+      document.getElementById("xhr_data").value = '';
+    }
+    function cookie_get() {
+      document.getElementById("cookie_data").value = document.cookie;
+    }
+  </script>
+</head>
+
+<body class="container" onload="init_prosesor()">
+  <div class="row well">
+    <div class="col-sm-2">
+      <label class="control-label">Method</label>
+      <select class="form-control" id="method_select">
+        <option value="GET">Get</option>
+        <option value="POST">Post</option>
+      </select>
+    </div>
+    <div class="col-sm-8 custom-file">
+      <form onsubmit="test_prosesor();return false">
+        <label class="control-label">Url</label>
+        <input type="text" class="form-control" id="url_data">
+      </form>
+    </div>
+    <div class="col-sm-2">
+      <label class="control-label">Click</label>
+      <button class="btn btn-primary form-control" onclick="test_prosesor()">Go</button>
+    </div>
+    <div class="col-sm-10">
+      <label class="control-label">Cookie</label>
+      <input type="text" class="form-control" id="cookie_data">
+    </div>
+    <div class="col-sm-2">
+      <label class="control-label">Click</label>
+      <button class="btn btn-primary form-control" onclick="cookie_get()">Check</button>
+    </div>
+    <div class="col-sm-6 custom-file">
+      <label class="control-label">Click</label>
+      <div>
+        <button class="btn btn-primary col-sm-2" onclick="test_prosesor('GET')">GET</button>
+        <button class="btn btn-primary col-sm-2" onclick="test_prosesor('POST')">POST</button>
+        <button class="btn btn-secondary col-sm-2" onclick="init_prosesor()">InitReq</button>
+        <button class="btn btn-secondary col-sm-2" onclick="clear_all()">ClrAll</button>
+        <button class="btn btn-secondary col-sm-2" onclick="clear_req()">ClrReq</button>
+        <button class="btn btn-secondary col-sm-2" onclick="clear_res()">ClrRes</button>
+      </div>
+    </div>
+    <div class="col-sm-2 custom-file">
+      <label class="control-label">Status</label>
+      <input type="text" class="form-control" id="stt_data">
+    </div>
+    <div class="col-sm-2 custom-file">
+      <label class="control-label">SttCode</label>
+      <input type="text" class="form-control" id="stt_code">
+    </div>
+    <div class="col-sm-2 custom-file">
+      <label class="control-label">SttText</label>
+      <input type="text" class="form-control" id="stt_text">
+    </div>
+    <div class=" col-sm-6">
+      <label class="control-label">Request data</label>
+      <textarea id="req_data" placeholder="Request data" class="form-control"
+        style="font-family:Courier New;resize:vertical" rows="10" cols="50"></textarea>
+    </div>
+    <div class="col-sm-6">
+      <label class="control-label">Response data</label>
+      <textarea id="res_data" placeholder="Response data" class="form-control"
+        style="font-family:Courier New;resize:vertical" rows="10" cols="50"></textarea>
+    </div>
+    <div class=" col-sm-6">
+      <label class="control-label">Header</label>
+      <textarea id="header_data" placeholder="Header" class="form-control"
+        style="font-family:Courier New;resize:vertical" rows="10" cols="50"></textarea>
+    </div>
+    <div class="col-sm-6">
+      <label class="control-label">Xhr</label>
+      <textarea id="xhr_data" placeholder="Xhr" class="form-control" style="font-family:Courier New;resize:vertical"
+        rows="10" cols="50"></textarea>
+    </div>
+  </div>
+
+</body>
+
+</html>

@@ -1,0 +1,296 @@
+<script>
+  var current_page = 1;
+  var page_size = 10;
+  var total_page = 1;
+  var title_query;
+  var id_query;
+  var title_edit;
+  var description_edit;
+
+  var role_id_edit;
+  var permission_id_edit;
+  var permission_list;
+  var role_id = null;
+
+  init();
+  function init() {
+    role_create_show();
+    role_get_list();
+    permission_get_list();
+    //page click action
+    $('#pagination-here').on("page", function (event, num) {
+      //show / hide content or pull via ajax etc
+      current_page = num;
+      role_get_list_page(function () { });
+    });
+  }
+  function role_create_show() {
+    document.getElementById("create_box").style.display = "block";
+    document.getElementById("edit_box").style.display = "none";
+    document.getElementById("permission_box").style.display = "none";
+  }
+  function role_edit_show() {
+    document.getElementById("create_box").style.display = "none";
+    //document.getElementById("create_box").style.display = "block";
+    document.getElementById("edit_box").style.display = "block";
+    document.getElementById("permission_box").style.display = "none";
+
+    //document.getElementById("title_edit").disabled = false;
+    document.getElementById("title_edit").disabled = true;
+    document.getElementById("description_edit").disabled = false;
+    
+  }
+
+  function role_permission_edit_show() {
+    document.getElementById("create_box").style.display = "none";
+    document.getElementById("edit_box").style.display = "none";
+    document.getElementById("permission_box").style.display = "block";
+
+    //document.getElementById("title_edit").disabled = false;
+    document.getElementById("title_edit").disabled = true;
+    document.getElementById("description_edit").disabled = false;
+    //role_get_permission();
+  }
+
+  function role_create() {
+    //if (confirm('are you sure?')) {
+      if (confirm('Xác nhận?')) {
+      let req_data = {};
+      req_data.title = document.getElementById("title_create").value;;
+      req_data.description = document.getElementById("description_create").value;
+      if (!/[a-z]/i.test(req_data.title)) {
+        alert("Tên nhóm không hợp lệ!")
+      }else{
+        gw_gui_call_api('POST', '/api/role/create', req_data, null, function (status, data, xhr) {
+        if ('success' == status) {
+          //alert("Success");
+          alert("Đã tạo nhóm thành công!");
+        }
+        else {
+          alert(xhr.responseJSON.message);
+        }
+        role_get_list_page(function () { });
+      })
+      }
+    }
+  }
+
+  function role_edit() {
+    //if (confirm('are you sure?')) {
+      if (confirm('Xác nhận?')) {
+      let cur_role_title = document.getElementById("title_edit").value;
+      let cur_role_description = document.getElementById("description_edit").value;
+      let alert_data = "success";
+      if (cur_role_title != title_edit || cur_role_description != description_edit) {
+        let req_data = {};
+        req_data.id = role_id_edit;
+        req_data.title = cur_role_title;
+        req_data.description = cur_role_description;
+        gw_gui_call_api('PUT', '/api/role/edit', req_data, null, function (status, data, xhr) {
+          if ('success' == status) {
+            alert("Success");
+          }
+          else {
+            alert_data = xhr.responseJSON.msg;
+            console.log(xhr.responseJSON.msg);
+          }
+          role_get_list_page(function () { });
+        });
+      }
+    }
+  }
+
+  function role_get_list() {
+    current_page = 1;
+    title_query = document.getElementById("title_query").value;
+    id_query = document.getElementById("id_query").value;
+    role_get_list_page(function (data) {
+      total_page = Math.ceil(data.count / page_size);
+      init_pagination();
+    })
+  }
+
+  function role_get_list_page(callback) {
+    let req_data;
+    req_data = `title=${title_query}&id=${id_query}&page=${current_page - 1}&page_size=${page_size}`;
+    console.log("page current="+current_page);
+    
+    //gw_gui_call_api('GET', '/api/role/get_list', req_data, null, function (status, data, xhr) {
+      gw_gui_call_api('GET', '/api/role/getList', req_data, null, function (status, data, xhr) {
+        console.log(data);
+        console.log("so phan tu="+data.data.totalElements);
+      if ('success' == status) {
+        let html_data = '';
+        //for (let i = 0; i < data.data.result.length; i++) {//totalElements
+          for (let i = 0; i < data.data.result.length; i++) {
+
+          html_data +=
+            `<tr>
+              <td scope="col">${(current_page - 1) * page_size + i + 1}</td>
+              <td scope="col">${data.data.result[i].TITLE || ""}</td>
+              <td scope="col">${data.data.result[i].ID || ""}</td>
+              <td scope="col">${data.data.result[i].DESCRIPTION || ""}</td>
+            </tr>`;
+        }
+        document.getElementById("role_tbody").innerHTML = html_data;
+        role_table_onclick();
+        callback(data);
+      }
+      else {
+        role_table_onclick();
+        console.log(xhr.responseJSON.msg);
+        alert(xhr.responseJSON.msg);
+      }
+    });
+  }
+
+  function role_get_permission() {
+    let req_data;
+    req_data = `id=${role_id}`;
+
+    gw_gui_call_api('GET', '/api/permission/get', req_data, null, function (status, data, xhr) {
+      if ('success' == status) {
+        document.getElementById("create_box").style.display = "none";
+        document.getElementById("permission_box").style.display = "none";
+        document.getElementById("edit_box").style.display = "block";
+        document.getElementById("permission_table").style.display = "block";
+
+        //document.getElementById("title_create").disabled = true;
+        //document.getElementById("description_create").disabled = true;
+
+        document.getElementById("title_edit").disabled = true;
+        document.getElementById("description_edit").disabled = true;
+
+        document.getElementById("title_edit").value = title_edit;
+        document.getElementById("role_id_edit").value = role_id_edit;
+        document.getElementById("description_edit").value = description_edit;
+
+        let html_data = '';
+        //for (let i = 0; i < data.result.length; i++) {
+          for (let i = 0; i < data.data.length; i++) {
+          html_data +=
+            `
+          <tr>
+            <td scope="col">${data.data[i].TITLE}</td>
+            <td scope="col"><button>x</button></td>
+          <tr>`
+        }
+        permission_get_list(html_data);
+        $('table tbody button').click(function () {
+          permission_id_edit = ($(this).closest('td').prev('td').prev('td').text());
+          permission_remove();
+        })
+        console.log(data);
+      }
+      else {
+        console.log(data);
+        alert(xhr.responseJSON.msg);
+      }
+    });
+  }
+
+  function role_table_onclick() {
+    gw_gui_table_onclick("role_table", function (rowSelected) {
+      title_edit = rowSelected.cells[1].innerHTML;
+      role_id_edit = rowSelected.cells[2].innerHTML;
+      description_edit = rowSelected.cells[3].innerHTML;
+      role_id = role_id_edit;
+      role_get_permission();
+    });
+  }
+
+  function permission_table_onclick() {
+    gw_gui_table_onclick("permission_table", function (rowSelected) { })
+  }
+
+  function permission_get_list(html) {
+    let req_data;
+    //gw_gui_call_api('GET', '/api/role/permission/get_list', req_data, null, function (status, data, xhr) {
+      gw_gui_call_api('GET', '/api/permission/getList', req_data, null, function (status, data, xhr) {
+      if ('success' == status) {
+        let html_data = html + `<tr><td><select class="form-control">`;
+        //permission_list = data.result;
+        permission_list = data.data.result;
+        for (let i = 0; i < permission_list.length; i++) {
+          html_data +=
+            `
+                <option value="${permission_list[i].ID}">${permission_list[i].title}</option>
+            `
+        }
+        html_data += `</select></td><td scope="col"><button>+</button></td></tr>`;
+        document.getElementById("role_tbody_1").innerHTML = html_data;
+        //document.getElementById("permission_list").style.display = "none";
+        //document.getElementById("permission_list").innerHTML = html_data;
+      }
+      else {
+        permission_list = [];
+      }
+    });
+  }
+
+  function permission_remove() {
+    //if (confirm('are you sure?')) {
+      if (confirm('Xác nhận?')) {
+      let req_data = {};
+      req_data.role_id = role_id_edit;
+      req_data.permission_id = permission_id_edit;
+      req_data.status = -1;
+      if (req_data.permission_id && req_data.role_id) {
+        gw_gui_call_api('POST', '/api/role/edit_role_permission', req_data, null, function (status, data, xhr) {
+          if ('success' == status) {
+            alert('success');
+            role_get_permission();
+          }
+          else {
+            console.log(data);
+            alert(xhr.responseJSON.msg);
+          }
+        });
+      }
+    }
+  }
+
+  function permission_add() {
+    //if (confirm('are you sure?')) {
+      if (confirm('Xác nhận?')) {
+      let req_data = {};
+      req_data.role_id = role_id_edit;
+      req_data.permission_id = document.getElementById("permission_add").value;
+      req_data.status = 0;
+      if (req_data.permission_id && req_data.role_id) {
+        gw_gui_call_api('POST', '/api/role/edit_role_permission', req_data, null, function (status, data, xhr) {
+          if ('success' == status) {
+            alert('success');
+            role_get_permission();
+          }
+          else {
+            console.log(data);
+            alert(xhr.responseJSON.msg);
+          }
+        });
+      }
+    }
+  }
+
+  function init_pagination() {
+    $('#pagination-here').bootpag({
+      total: total_page,
+      page: current_page,
+      maxVisible: 5,
+      leaps: false,
+      firstLastUse: true,
+      next: '>',
+      prev: '<',
+      first: '<<',
+      last: '>>',
+      wrapClass: 'pagination',
+      activeClass: 'active',
+      disabledClass: 'disabled',
+      nextClass: 'next',
+      prevClass: 'prev',
+      lastClass: 'last',
+      firstClass: 'first'
+    })
+  }
+
+</script>

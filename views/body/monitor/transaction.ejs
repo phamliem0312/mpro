@@ -1,0 +1,35 @@
+<div class="row">
+  <div class="col-sm-12 row">
+    <div class='form-group col-sm-2'>
+      <select class="form-control" id="flow_query">
+        <option value="req">Request</option>
+        <option value="res">Response</option>
+      </select>
+    </div>
+    <div class="form-group col-sm-4">
+      <div class='input-group date' id='datetimepicker1'>
+        <input type='text' class="form-control" placeholder="From" />
+        <span class="input-group-addon">
+          <span class="glyphicon glyphicon-calendar"></span>
+        </span>
+      </div>
+    </div>
+    <div class="form-group col-sm-4">
+      <div class='input-group date' id='datetimepicker2'>
+        <input type='text' class="form-control" placeholder="To" />
+        <span class="input-group-addon">
+          <span class="glyphicon glyphicon-calendar"></span>
+        </span>
+      </div>
+    </div>
+    <div class='form-group col-sm-2'>
+      <button class="form-control" onclick="transaction_query()">Search</button>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <canvas id="lineChart"></canvas>
+  </div>
+  <div class="col-sm-6">
+    <canvas id="pieChart"></canvas>
+  </div>
+</div>

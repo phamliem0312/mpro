@@ -1,0 +1,67 @@
+<div>
+	<div class="col-md-12 container" style="margin-top: 100px">
+		<form onsubmit="login();return false;">
+			<div class="row">
+				<div class="col-md-6">
+					<h3 style="color: #9DA9B1;	font-weight: bold">
+						Welcome to
+					</h3>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<h1 style="color: #F27228;	font-weight: bold">
+						GATEWAY CONVERSATION GUI
+					</h1>
+				</div>
+				<div class="col-md-12">
+					<img class=" margin-bottom-5" src="/img/normal_line_fpt_color.png" />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<span class="glyphicon glyphicon-user"></span>
+					<label class="control-label">Username</label>
+					<input class="form-control" type="text" placeholder="username" autofocus id="username" />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<span class="glyphicon glyphicon-lock"></span>
+					<label class="control-label">Password</label>
+					<input class="form-control" id="password" placeholder="password" type="password" autocomplete="off" />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<!-- <input type="checkbox" id="rememberMe" name="rememberMe" value="true">
+						<label for="remember"><span></span> Ghi nhớ tài khoản</label> -->
+					<br />
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-6">
+					<input type="submit" class="btn btn-primary btn-block" style="border-style: none; background-color:#F27228;"
+						value="Login">
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<script>
+	var req_data = {};
+	function login() {
+		req_data.username = document.getElementById("username").value;
+		req_data.password = document.getElementById("password").value;
+		gw_gui_call_api('POST', '/api/user/login', req_data, null, function (status, data, xhr) {
+			if ('success' == status) {
+				window.location.href = '/';
+			}
+			else {
+				console.log(data);
+				alert(data);
+			}
+		});
+	}
+</script>

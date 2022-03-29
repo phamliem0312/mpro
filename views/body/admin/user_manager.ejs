@@ -1,0 +1,201 @@
+<div class="row">
+  <div class="col-sm-6">
+    <div class="well">
+      <div class="row">
+        <div class="col-sm-3">
+          <label class="control-label">Tài khoản</label>
+          <input type="text" class="form-control" id="username_query">
+        </div>
+        <div class="col-sm-3">
+          <label class="control-label">Mã</label>
+          <input type="text" class="form-control" id="code_query">
+        </div>
+        <div class="col-sm-3">
+          <label class="control-label">Nhóm</label>
+          <select class="form-control" id="group_query">
+          </select>
+        </div>
+        <div class="col-sm-3">
+          <label class="control-label">Tìm</label>
+          <button class="btn fis form-control" onclick="filterData();">
+            <span class="glyphicon glyphicon-search"></span>
+            Tìm
+          </button>
+        </div>
+      </div>
+      <br />
+      <table class="table table-hover" id="user_table">
+        <thead class="">
+          <tr style="background-color: #4d4d4d; color: aliceblue;">
+            <th scope="col">STT</th>
+            <th scope="col">Tài khoản</th>
+            <th scope="col">Mã</th>
+            <th scope="col">Nhóm người dùng</th>
+          </tr>
+        </thead>
+        <tbody id=user_tbody>
+          <tr>
+            <td scope="col">1</td>
+            <td scope="col">user1</td>
+            <td scope="col">1</td>
+            <td scope="col">Người dùng</td>
+          </tr>
+          <tr>
+            <td scope="col">2</td>
+            <td scope="col">user2</td>
+            <td scope="col">2</td>
+            <td scope="col">Người dùng</td>
+          </tr>
+          <tr>
+            <td scope="col">3</td>
+            <td scope="col">user3</td>
+            <td scope="col">3</td>
+            <td scope="col">Người dùng</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="text-right" id="pagination-here"></div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="row">
+      <div class="well">
+        <div class="row">
+          <div class="col-sm-3">
+            <button id="create" class="btn fis form-control" onclick="user_create_show()">
+              <span class="glyphicon glyphicon-plus"></span>
+              Tạo
+            </button>
+          </div>
+          <div class="col-sm-3">
+            <button id="edit" class="btn fis form-control" onclick="user_edit_show()">
+              <span class="glyphicon glyphicon-edit"></span>
+              Sửa
+            </button>
+          </div>
+          <div class="col-sm-6"></div>
+        </div>
+        <div id="create_box">
+          <div class="row">
+            <div class="col-sm-6">
+              <label class="control-label">Tài khoản</label>
+              <input type="text" class="form-control" id="username_create">
+            </div>
+            <div class="col-sm-6">
+              <label class="control-label">Mật khẩu</label>
+              <input type="text" class="form-control" id="password_create">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <label class="control-label">Tên</label>
+              <input type="text" class="form-control" id="first_name_create">
+            </div>
+            <div class="col-sm-6">
+              <label class="control-label">Họ</label>
+              <input type="text" class="form-control" id="last_name_create">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <label class="control-label">Số điện thoại</label>
+              <input type="text" class="form-control" id="phone_create">
+            </div>
+            <div class="col-sm-6">
+              <label class="control-label">Nhóm người dùng</label>
+              <select class="form-control" id="user-group-detail">
+              </select>
+            </div>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6"></div>
+            <div class="col-sm-3">
+              <button class="btn fis form-control" onclick="user_create();">
+                <span class="glyphicon glyphicon-save"></span>
+                Lưu</button>
+            </div>
+          </div>
+        </div>
+        <div id="edit_box">
+          <div class="row">
+            <div class="col-sm-6">
+              <label class="control-label">Tài khoản</label>
+              <input type="text" class="form-control" disabled id="username_edit">
+            </div>
+            <div class="col-sm-6">
+              <label class="control-label">Mật khẩu</label>
+              <input type="text" class="form-control" id="password_edit">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <label class="control-label">Tên</label>
+              <input type="text" class="form-control" id="first_name_edit">
+            </div>
+            <div class="col-sm-6">
+              <label class="control-label">Họ</label>
+              <input type="text" class="form-control" id="last_name_edit">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <label class="control-label">Số điện thoại</label>
+              <input type="text" class="form-control" id="phone_edit">
+            </div>
+            <div class="col-sm-6">
+              <label class="control-label">Nhóm người dùng</label>
+              <select class="form-control" id="user-group-edit">
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <label class="control-label">Trạng thái</label>
+              <select class="form-control" id="status_edit">
+                <option value="1">Hiệu lực</option>
+                <option value="0">Hết hiệu lực</option>
+              </select>
+            </div>
+            <div class="col-sm-6">
+              <label class="control-label">Đăng nhập cuối</label>
+              <input type="text" class="form-control" disabled id="last_login_edit">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <label class="control-label">Người tạo</label>
+              <input type="text" class="form-control" disabled id="user_created_edit">
+            </div>
+            <div class="col-sm-6">
+              <label class="control-label">Ngày tạo</label>
+              <input type="text" class="form-control" disabled id="date_created_edit">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <label class="control-label">Người sửa</label>
+              <input type="text" class="form-control" disabled id="user_modified_edit">
+            </div>
+            <div class="col-sm-6">
+              <label class="control-label">Ngày sửa</label>
+              <input type="text" class="form-control" disabled id="date_modified_edit">
+            </div>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-sm-3">
+            </div>
+            <div class="col-sm-6"></div>
+            <div class="col-sm-3">
+              <button class="btn fis form-control" onclick="user_edit()">
+                <span class="glyphicon glyphicon-save"></span>
+                Lưu</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

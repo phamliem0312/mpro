@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% var title = typeof title != 'undefined' ? title : 'Default'; %>
+  <%- include('../partials/head', {title: title}); %>
+</head>
+<body class="container fis-bg">
+  <%- include(body_name); %>
+</body>
+
+</html>

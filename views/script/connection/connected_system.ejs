@@ -1,0 +1,206 @@
+<script>
+  var current_page = 1;
+  var page_size = 10;
+  var total_page = 1;
+  var username_query;
+  var id_edit;
+  init();
+  function init() {
+    user_edit_show();
+    user_get_list();
+    //page click action
+    $('#pagination-here').on("page", function (event, num) {
+      //show / hide content or pull via ajax etc
+      current_page = num;
+      user_get_list_page(function () { });
+    });
+  }
+  function user_create_show() {
+    //document.getElementById("create_box").style.display = "block";//bo thu
+    //document.getElementById("edit_box").style.display = "none";//tai sao loi ma usermanger ko loi
+    $("#edit_box").hide();
+    $("#create_box").show();
+  }
+  function user_edit_show() {
+    $("#edit_box").show();
+    $("#create_box").hide();
+  }
+  function user_create() {
+    //if (confirm('are you sure?')) {
+    if (confirm('Xác nhận?')) {
+      let req_data = {};
+      req_data.ip = document.getElementById("ip_create").value;
+      req_data.port = document.getElementById("port_create").value;
+      req_data.name = document.getElementById("name_create").value;
+      req_data.status = document.getElementById("status_create").value;
+      if (!/[0-9]/i.test(req_data.ip)) {
+        alert("Ip không hợp lệ!");
+      } else if (!/[0-9]/i.test(req_data.port)) {
+        alert("Port không hợp lệ")
+      } else if (req_data.name.trim() == "") {
+        alert("Tên không hợp lệ.")
+      } else if (req_data.status == "") {
+        alert("Yêu cầu chọn trạng thái.")
+      } else {
+        gw_gui_call_api('POST', '/api/system/create', req_data, null, function (status, data, xhr) {
+          if ('success' == status) {
+            alert('Success'); //Password is ' + req_data.password);
+            user_get_list_page(function () { });
+          }
+          else {
+            console.log(xhr.responseJSON);
+            alert(xhr.responseJSON.msg);
+          }
+        });
+      }
+    }
+  }
+  function user_edit() {
+    //if(confirm('are you sure?'))
+    if (confirm('Xác nhận?')) {
+      let req_data = {};
+      req_data.ip = document.getElementById("ip_edit").value;
+      req_data.port = document.getElementById("port_edit").value;
+      req_data.password = document.getElementById("password_edit").value;
+      req_data.user = document.getElementById("name_edit").value;
+      req_data.title = document.getElementById("account_edit").value;
+      req_data.status = document.getElementById("status_edit").value;
+      console.log(req_data);
+      gw_gui_call_api('PUT', '/api/system/edit', req_data, null, function (status, data, xhr) {
+        if ('success' == status) {
+          alert('success');
+          user_get_list_page(function () { });
+        }
+        else {
+          console.log(data);
+          alert(xhr.responseJSON.msg);
+        }
+      });
+    }
+  }
+  /*function user_resetpass() {
+    if(confirm('are you sure?'))
+    {
+      let req_data = {};
+      req_data.username = document.getElementById("username_edit").value;
+      req_data.password = gw_gui_random_string(6);
+      req_data.password_repeat = req_data.password;
+      gw_gui_call_api('POST', '/api/user/change_password', req_data, null, function (status, data, xhr) {
+        if ('success' == status) {
+          alert('Success. Password is ' + req_data.password);
+        }
+        else {
+          console.log(xhr.responseJSON);
+          alert(xhr.responseJSON.msg);
+        }
+      });
+    }
+  }*/
+  function user_get_list() {
+    current_page = 1;
+    username_query = document.getElementById("username_query").value;
+    //id_query = document.getElementById("id_query").value;
+    //role_id_query = document.getElementById("role_id_query").value;
+    role_id_query = "";
+    user_get_list_page(function (data) {
+      // total_page = Math.ceil(data.count / page_size);
+      total_page = Math.ceil(100 / page_size);
+      //init_pagination();
+    })
+  }
+
+  function user_get_list_page(callback) {
+    let req_data;
+    req_data = `username=${username_query}&page=${current_page - 1}&page_size=${page_size}`;
+    //req_data = `username=${username_query}&role_id=${role_id_query}&page=${current_page - 1}&page_size=${page_size}`;
+    //req_data = "";
+    //gw_gui_call_api('GET', '/api/user/get_list', req_data, null, function (status, data, xhr) {
+    gw_gui_call_api('GET', '/api/system/getList', req_data, null, function (status, data, xhr) {
+      if ('success' == status) {
+        console.log(data)
+        let html_data = '';
+        for (let i = 0; i < data.data.result.length; i++) {
+          html_data +=
+            `<tr>
+              <td scope="col">${(current_page - 1) * page_size + i + 1}</td>
+              <td scope="col">${data.data.result[i].IP}</td>
+              <td scope="col">${data.data.result[i].USER}</td>
+              <td scope="col">${data.data.result[i].STATUS ? "✓" : "✗"}</td>
+            </tr>`;
+        }
+        ///result[i].username
+        ///result[i].id
+        ///result[i].role_id
+        document.getElementById("user_tbody").innerHTML = html_data;
+        user_table_onclick();
+        callback(data);
+      }
+      else {
+        console.log(data);
+        user_table_onclick();
+        callback(data);
+        alert(xhr.responseJSON.msg);
+      }
+    });
+  }
+
+  function user_table_onclick() {
+    gw_gui_table_onclick("user_table", function (rowSelected) {
+      let req_data;
+      username_edit = rowSelected.cells[1].innerHTML;
+      //id_query = rowSelected.cells[0].innerHTML;
+      //req_data = `username=${username_edit}`;
+      req_data = `ip=${username_edit}`;
+      //req_data =   'id=${id_query}';
+      //document.getElementById("create_box").style.display = "none";
+      //document.getElementById("edit_box").style.display = "block";
+
+      gw_gui_call_api('GET', '/api/system/get', req_data, null, function (status, data, xhr) {
+        if ('success' == status) {
+          //       document.getElementById("role_id_edit").disabled = true;
+          //       document.getElementById("first_name_edit").disabled = true;
+          //       document.getElementById("last_name_edit").disabled = true;
+          //       document.getElementById("phone_edit").disabled = true;
+          //       document.getElementById("position_edit").disabled = true;
+          //       document.getElementById("status_edit").disabled = true;
+          console.log(data);
+          document.getElementById("name_edit").value = data.data.result.USER;
+          document.getElementById("ip_edit").value = data.data.result.IP;
+          document.getElementById("port_edit").value = data.data.result.PORT;
+          //document.getElementById("account_edit").value = data.data.result.TITLE;
+          document.getElementById("status_edit").value = data.data.result.STATUS;
+          //document.getElementById("password_edit").value = data.data.result.PASSWORD;
+          // document.getElementById("user_created_edit").value = data.data.result.USER_CREATED;
+          // document.getElementById("user_modified_edit").value = data.data.result.USER_MODIFIED;
+          // document.getElementById("date_created_edit").value = data.data.result.DATE_CREATED;
+          // document.getElementById("date_modified_edit").value = data.data.result.DATE_CREATED;
+        }
+        else {
+          console.log(data);
+          alert(xhr.responseJSON.msg);
+        }
+      });
+    });
+  }
+
+  function init_pagination() {
+    $('#pagination-here').bootpag({
+      total: total_page,
+      page: current_page,
+      maxVisible: 2,
+      leaps: false,
+      firstLastUse: true,
+      next: '>',
+      prev: '<',
+      first: '<<',
+      last: '>>',
+      wrapClass: 'pagination',
+      activeClass: 'active',
+      disabledClass: 'disabled',
+      nextClass: 'next',
+      prevClass: 'prev',
+      lastClass: 'last',
+      firstClass: 'first'
+    })
+  }
+</script>

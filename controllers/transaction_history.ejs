@@ -1,0 +1,214 @@
+<script>
+    var current_page = 1;
+    var page_size = 50;
+    var total_page = 1;
+
+    var start_time;
+    var end_time;
+
+    var kind_query;
+    var service_query;
+    var msgid_query;
+    var direct_query;
+    var termid_query;
+
+    function init() {
+        transaction_get_list();
+        //page click action
+        $('#pagination-here').on("page", function (event, num) {
+            //show / hide content or pull via ajax etc
+            current_page = num;
+            transaction_get_list_page(function () {});
+        });
+    }
+
+    function transaction_get_list() {
+        current_page = 1;
+        start_time = $('#datetimepicker1').find("input").val();
+        end_time = $('#datetimepicker2').find("input").val();
+        //kind_query = document.getElementById("kind_query").value;
+        msgid_query = document.getElementById("msgid_query").value;
+        service_query = document.getElementById("service_query").value;
+        //acc_query = document.getElementById("accnumber_query").value;
+        error_query = document.getElementById("error_query").value;
+        direct_query = document.getElementById("direct_query").value;
+        termid_query = document.getElementById("termid_query").value;
+        transaction_get_list_page(function (data) {
+            total_page = Math.ceil(data.total / page_size);
+            let count_show = "Number of result: " + data.total;
+            document.getElementById("count_show").innerHTML = count_show;
+            init_pagination();
+            init_bootstrap_table();
+        })
+    }
+
+    function transaction_get_list_page(callback) {
+        let req_data;
+        req_data = 'service=' + service_query + '&direct=' + direct_query + '&termid=' + termid_query + '&page=' + (
+            current_page - 1) + '&page_size=' + page_size;
+        req_data += '&start_time=' + escape(start_time) + '&end_time=' + escape(end_time) + "&error=" + error_query +
+            //"&acc_number=" + acc_query + "&msgid=" + msgid_query;
+             + "&msgid=" + msgid_query;
+        $.ajax({
+            url: '/api/monitor/transaction/get_list?' + req_data,
+            type: 'GET'
+        }).done(result => {
+            document.getElementById("transaction_tbody").innerHTML = "";
+            let html_data = '';
+            if (Object.keys(result.data).length == 0) {
+                html_data = `<tr><td colspan="10" style="text-align: center;">No match result</td></tr>`;
+            } else {
+                for (let i = 0; i < Object.keys(result.data).length; i++) {
+                    if (result.data[i]['SENDER_REFERENCE'].substr(0, 4) == "0698") {
+                        html_data +=
+                            `<tr>
+                      <td scope="col">${(current_page - 1) * page_size + i + 1}</td>
+                      <td scope="col"><a onclick="get_detail_transaction(this)" data-toggle="modal" data-target="#myModal1" value=${service_query}>${result.data[i]['SENDER_REFERENCE']}</a></td>
+                      <td scope="col">${result.data[i].CREDT}</td>
+                      <td scope="col">${result.data[i]['SENDER_ID']}</td>
+                      <td scope="col">${result.data[i]['RECEIVER_ID']}</td>
+                      <td scope="col">${result.data[i].SERVICE}</td>
+                      <td scope="col">${result.data[i]['MESSAGE_IDENTIFIER']}</td>
+                      <td scope="col">${result.data[i]['TTLINTRBKSTTLMAMT_CCY']}</td>
+                      <td scope="col">${result.data[i]['TTLINTRBKSTTLMAMT_VALUE']}</td>
+                      <td scope="col">${result.data[i]['DBTRACCT_ID']}</td>
+                    </tr>`;
+                    } else {
+                        html_data +=
+                            `<tr>
+                      <td scope="col">${(current_page - 1) * page_size + i + 1}</td>
+                      <td scope="col"><a onclick="get_detail_transaction(this)" data-toggle="modal" data-target="#myModal1" value=${service_query}>${result.data[i]['SENDER_REFERENCE']}</a></td>
+                      <td scope="col">${result.data[i].CREDT}</td>
+                      <td scope="col">${result.data[i]['SENDER_ID']}</td>
+                      <td scope="col">${result.data[i]['RECEIVER_ID']}</td>
+                      <td scope="col">${result.data[i].SERVICE}</td>
+                      <td scope="col">${result.data[i]['MESSAGE_IDENTIFIER']}</td>
+                      <td scope="col">${result.data[i]['TTLINTRBKSTTLMAMT_CCY']}</td>
+                      <td scope="col">${result.data[i]['TTLINTRBKSTTLMAMT_VALUE']}</td>
+                      <td scope="col">${result.data[i]['DBTRACCT_ID']}</td>
+                    </tr>`;
+                    }
+                }
+            }
+            document.getElementById("transaction_tbody").innerHTML = html_data;
+            transaction_table_onclick();
+            callback(result);
+        });
+    }
+
+    function transaction_table_onclick() {
+        gw_gui_table_onclick("transaction_table", function (rowSelected) {});
+    }
+
+    function init_pagination() {
+        $('#pagination-here').bootpag({
+            total: total_page,
+            page: current_page,
+            maxVisible: 5,
+            leaps: false,
+            firstLastUse: true,
+            next: '>',
+            prev: '<',
+            first: '<<',
+            last: '>>',
+            wrapClass: 'pagination',
+            activeClass: 'active',
+            disabledClass: 'disabled',
+            nextClass: 'next',
+            prevClass: 'prev',
+            lastClass: 'last',
+            firstClass: 'first'
+        })
+    }
+
+    function init_bootstrap_table() {
+        $('#transaction_table').bootstrapTable({
+            search: false,
+            showFullscreen: false,
+            showColumns: false
+        })
+    }
+
+    function get_detail_transaction(param) {
+        $.ajax({
+            url: '/api/monitor/transaction/get_detail?' + 'msgid=' + $(param).text(),
+            type: 'GET'
+        }).done(result => {
+            let html_data = ``;
+            for (let i = 0; i < Object.keys(result.data).length; i++) {
+                if (Object.values(result.data)[i] == null || Object.keys(result.data)[i] == "fulldata" || Object.keys(
+                        result.data)[i] == "status" || Object.keys(result.data)[i] == "ack" || Object.keys(result.data)[i] ==
+                    "httpstatus") {
+                    html_data += ``;
+                } else {
+                    html_data += `<tr>
+                        <th>` + Object.keys(result.data)[i] + `</th>
+                        <td>` + Object.values(result.data)[i] + `</td>
+                        </tr>`;
+                }
+            }
+            document.getElementById("detail_tb").innerHTML = html_data;
+            document.getElementById("process_tb").getElementsByTagName('tr')[0].getElementsByTagName('td')[0]
+                .innerHTML = result.ack || "none";
+            document.getElementById("process_tb").getElementsByTagName('tr')[1].getElementsByTagName('td')[0]
+                .innerHTML = result.status || "RJCT";
+            document.getElementById("process_tb").getElementsByTagName('tr')[2].getElementsByTagName('td')[0]
+                .innerHTML = result.camt025 || "none";
+            document.getElementById("process_tb").getElementsByTagName('tr')[3].getElementsByTagName('td')[0]
+                .innerHTML = result.data.HTTPSTATUS || "200";
+            document.getElementById("process_tb").getElementsByTagName('tr')[4].getElementsByTagName('td')[0]
+                .innerHTML = result.data.REPEAT || "0";
+            document.getElementById("audit_tb").getElementsByTagName('tr')[0].getElementsByTagName('td')[0]
+                .innerHTML = "auto";
+            document.getElementById("audit_tb").getElementsByTagName('tr')[1].getElementsByTagName('td')[0]
+                .innerHTML = "auto";
+            document.getElementById("audit_tb").getElementsByTagName('tr')[2].getElementsByTagName('td')[0]
+                .innerHTML = result.data.TIMESTAMP;
+        })
+    }
+
+    function detail() {
+        $("#get_detail").css("background-color", "rgb(240, 240, 240)");
+        $("#get_process").css("background-color", "white");
+        $("#get_audit").css("background-color", "white");
+        $("#detail_tb").show();
+        $("#process_tb").hide();
+        $("#audit_tb").hide();
+    }
+
+    function process() {
+        $("#get_process").css("background-color", "rgb(240, 240, 240)");
+        $("#get_detail").css("background-color", "white");
+        $("#get_audit").css("background-color", "white");
+        $("#detail_tb").hide();
+        $("#process_tb").show();
+        $("#audit_tb").hide();
+    }
+
+    function audit() {
+        $("#get_audit").css("background-color", "rgb(240, 240, 240)");
+        $("#get_process").css("background-color", "white");
+        $("#get_detail").css("background-color", "white");
+        $("#detail_tb").hide();
+        $("#process_tb").hide();
+        $("#audit_tb").show();
+    }
+
+    function close_detail() {
+        $("#get_detail").css("background-color", "rgb(240, 240, 240)");
+        $("#get_process").css("background-color", "white");
+        $("#get_audit").css("background-color", "white");
+        $("#detail_tb").show();
+        $("#process_tb").hide();
+        $("#audit_tb").hide();
+    }
+    init();
+    $(function () {
+        $('#datetimepicker1').datetimepicker({
+            format: 'YYYY-MM-DD HH:mm:ss'
+        });
+        $('#datetimepicker2').datetimepicker({
+            format: 'YYYY-MM-DD HH:mm:ss'
+        });
+    });
+</script>

@@ -1,0 +1,79 @@
+<nav class="navbar-inverse fis" style="font-family: 'Roboto', Times, serif;">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="#" class="navbar-brand" style="color:white" onclick="menu_toggle()">Menu</a>
+            <!-- <a class="navbar-brand" style="color:white" href="./gw_home.html">GATEWAY CONVERSATION</a> -->
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav ">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" style="color:white" href="#">
+                        Bảng điều khiển
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <!-- <li><a href="/monitor/transaction">Tổng quan</a></li> -->
+                        <li><a href="/monitor/transaction_history">Giám sát giao dịch</a></li>
+                    </ul>
+                </li>
+                <!-- <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" style="color:white" href="#">
+                        Nghiệp vụ
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/manager/admin_feature">Quản lý chức năng vận hành</a></li>
+                        <li><a href="/manager/user_feature">Quản lý chức năng người dùng</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" style="color:white" href="#">
+                        Sản phẩm
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/product/channel">Quản lý dịch vụ</a></li>
+                    </ul>
+                </li> -->
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" style="color:white" href="#">
+                        Kết nối
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <!-- <li><a href="/connection/email">Email</a></li> -->
+                        <!-- <li><a href="/connection/mobifonepay">MobiFonePay</a></li> -->
+                        <!-- <li><a href="/connection/ftp">FTP/SFTP (bankhub & TGTT)</a></li> -->
+                        <li><a href="/connection/connected_system">Hệ thống kết nối</a></li>
+                        <li><a href="/connection/param">Tham số hệ thống</a></li>
+                        <!-- <li><a href="/connection/author_system">Phân quyền hệ thống</a></li> -->
+                        <!-- <li><a href="/connection/author_account">Phân quyền tài khoản</a></li> -->
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" style="color:white" href="#">
+                        Quản trị
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/admin/user_manager">Quản trị người dùng</a></li>
+                        <li><a href="/admin/user_permission">Quản trị phân quyền</a></li>
+                        <li><a href="/product/channel">Quản lý dịch vụ</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a style="color:white" href="/user/profile"><span class="glyphicon glyphicon-user"></span>
+                        Cá nhân</a></li>
+                <li><a style="color:white" href="#" onclick="gw_gui_logout()"><span
+                            class="glyphicon glyphicon-log-out"></span>
+                        Đăng xuất</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>

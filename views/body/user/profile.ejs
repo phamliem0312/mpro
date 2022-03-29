@@ -1,0 +1,148 @@
+<style>
+  /* Style the tab */
+  .tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+  }
+
+  /* Style the buttons inside the tab */
+  .tab button {
+    border-radius: 5px 30px 0px 0px;
+    width: 200px;
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 17px;
+  }
+
+  /* Change background color of buttons on hover */
+  .tab button:hover {
+    background-color: #ddd;
+  }
+
+  /* Create an active/current tablink class */
+  .tab button.active {
+    background-color: #0275d8;
+    color: white;
+  }
+
+  /* Style the tab content */
+  .tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+  }
+</style>
+
+<div>
+  <div class="row">
+    <div class="tab">
+      <button class="tablinks active" onclick="open_tab(event, 'detail_info')">Profile</button>
+      <button class="tablinks" onclick="open_tab(event, 'change_info')">Change info</button>
+      <button class="tablinks" onclick="open_tab(event, 'change_pass')">Change pass</button>
+    </div>
+    <div class="col-sm-12 tabcontent" id="detail_info">
+      <div class="col-sm-2" style="text-align: center;">
+        <i style="font-size:150px" class="glyphicon glyphicon-user"></i>
+      </div>
+      <div class="col-sm-10">
+        <div class="row">
+          <div class="col-sm-6">
+            <label class="control-label">User name</label>
+            <input type="text" class="form-control" id="username_view">
+          </div>
+          <div class="col-sm-6">
+            <label class="control-label">Role ID</label>
+            <input type="text" class="form-control" id="role_id_view">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <label class="control-label">First name</label>
+            <input type="text" class="form-control" id="first_name_view">
+          </div>
+          <div class="col-sm-6">
+            <label class="control-label">Last name</label>
+            <input type="text" class="form-control" id="last_name_view">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <label class="control-label">Phone</label>
+            <input type="text" class="form-control" id="phone_view">
+          </div>
+          <div class="col-sm-6">
+            <label class="control-label">Position</label>
+            <input type="text" class="form-control" id="position_view">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <label class="control-label">User name</label>
+            <input type="text" class="form-control" id="status_view">
+          </div>
+          <div class="col-sm-6">
+            <label class="control-label">Role ID</label>
+            <input type="text" class="form-control" id="last_login_view">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12 tabcontent" id="change_info">
+      <div class="row">
+        <div class="col-sm-6">
+          <label class="control-label">First name</label>
+          <input type="text" class="form-control" id="first_name_edit">
+        </div>
+        <div class="col-sm-6">
+          <label class="control-label">Last name</label>
+          <input type="text" class="form-control" id="last_name_edit">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <label class="control-label">Phone</label>
+          <input type="text" class="form-control" id="phone_edit">
+        </div>
+        <div class="col-sm-6">
+          <label class="control-label">Position</label>
+          <input type="text" class="form-control" id="position_edit">
+        </div>
+      </div>
+      <br />
+      <div class="row">
+        <div class="col-sm-10"></div>
+        <div class="col-sm-2">
+          <button class="btn fis form-control" onclick="profile_edit_info()">
+            <span class="glyphicon glyphicon-save"></span>
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12 tabcontent" id="change_pass">
+      <label>Current password</label>
+      <input type="password" id="password_old_edit" class="form-control">
+      <label>New password</label>
+      <input type="password" id="password_edit" class="form-control">
+      <label>Confirm password</label>
+      <input type="password" id="password_repeat_edit" class="form-control">
+      <br />
+      <div class="row">
+        <div class="col-sm-10"></div>
+        <div class="col-sm-2">
+          <button class="btn fis form-control" onclick="profile_change_pass()">
+            <span class="glyphicon glyphicon-refresh"></span>
+            Change password
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

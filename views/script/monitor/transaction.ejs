@@ -1,0 +1,173 @@
+<script>
+  var ctx_lineChart = document.getElementById('lineChart').getContext('2d');
+  var ctx_pieChart = document.getElementById('pieChart').getContext('2d');
+  var line_data = {
+    labels: ["13", "14", "15", "16", "17", "18"],
+    datasets: [
+      {
+        label: 'Quantum',
+        yAxisID: 'Quantum',
+        data: [100100, 3030, 6363, 2020, 110110, 33],
+        backgroundColor: 'red',
+        borderColor: 'red',
+        fill: false
+      },
+      {
+        label: 'Amount',
+        yAxisID: 'Amount',
+        data: [108108, 7272, 1010, 3232, 190190, 7575],
+        backgroundColor: 'blue',
+        borderColor: 'blue',
+        fill: false
+      }
+    ]
+  }
+  var pie_data = [2000, 100, 30, 0];
+  var lineChart;
+  var pieChart;
+
+  const decline_rescode = [01, 03, 05, 12, 13, 14, 15, 21, 25, 30, 39, 51,
+    53, 54, 55, 57, 58, 59, 61, 62, 63, 64, 65, 68, 75, 76, 84,
+    85, 90, 91, 92, 94, 96];
+  const pick_up_rescode = [04, 34, 41, 43];
+
+  function transaction_query() {
+    get_volume();
+    get_rescode();
+  }
+
+  function get_rescode() {
+    let rescode_data = [];
+    let start_time = $('#datetimepicker1').find("input").val();
+    let end_time = $('#datetimepicker2').find("input").val();
+    let flow_query = $('#flow_query').val();
+    let req_data = 'start_time=' + escape(start_time) + '&end_time=' + escape(end_time) + '&flow=' + escape(flow_query);
+    gw_gui_call_api('GET', '/api/monitor/transaction/get_rescode', req_data, null, function (status, data, xhr) {
+      if ('success' == status) {
+        rescode_data = [0,0,0,0];
+        for (let i = 0; i < data.result.length; i++) {
+          if(0 == Number(data.result[i].rescode))
+          {
+            rescode_data[0] += Number(data.result[i].quantum)
+            console.log("0", data.result[i].rescode)
+          }
+          else if (pick_up_rescode.indexOf(Number(data.result[i].rescode)) != -1)
+          {
+            rescode_data[1] += Number(data.result[i].quantum)
+            console.log("1", data.result[i].rescode)
+          }
+          else if (decline_rescode.indexOf(Number(data.result[i].rescode)) != -1)
+          {
+            rescode_data[2] += Number(data.result[i].quantum)
+            console.log("2", data.result[i].rescode)
+          }
+          else
+          {
+            rescode_data[3] += Number(data.result[i].quantum)
+            console.log("3", data.result[i].rescode)
+          }
+        }
+        pieChart.data.datasets[0].data = rescode_data;
+        pieChart.update();
+        console.log(rescode_data);
+      }
+      else {
+        console.log(data);
+        alert(xhr.responseJSON.msg);
+      }
+    });
+  }
+
+  function get_volume() {
+    let labels_data = [];
+    let amount_data = [];
+    let quantum_data = [];
+    let start_time = $('#datetimepicker1').find("input").val();
+    let end_time = $('#datetimepicker2').find("input").val();
+    let flow_query = $('#flow_query').val();
+    let req_data = 'start_time=' + escape(start_time) + '&end_time=' + escape(end_time) + '&flow=' + escape(flow_query);
+    gw_gui_call_api('GET', '/api/monitor/transaction/get_volume', req_data, null, function (status, data, xhr) {
+      if ('success' == status) {
+        let html_data = '';
+        for (let i = 0; i < data.result.length; i++) {
+          labels_data[i] = data.result[i].time;
+          amount_data[i] = data.result[i].amount;
+          quantum_data[i] = data.result[i].quantum;
+        }
+        lineChart.data.labels = labels_data;
+        lineChart.data.datasets[0].data = quantum_data;
+        lineChart.data.datasets[1].data = amount_data;
+        lineChart.update();
+      }
+      else {
+        console.log(data);
+        alert(xhr.responseJSON.msg);
+      }
+    });
+  }
+
+  function chart_init() {
+    lineChart = new Chart(ctx_lineChart, {
+      type: 'line',
+      data: line_data,
+      options: {
+        title: {
+          display: true,
+          position: 'bottom',
+          text: 'Volume Transaction'
+        },
+        scales: {
+          yAxes: [{
+            id: 'Quantum',
+            type: 'linear',
+            position: 'left',
+          }, {
+            id: 'Amount',
+            type: 'linear',
+            position: 'right'
+          }]
+        }
+      }
+    });
+    pieChart = new Chart(ctx_pieChart, {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          data: pie_data,
+          backgroundColor: [
+            'blue',
+            'orange',
+            'yellow',
+            'red'
+          ]
+        }],
+        // These labels appear in the legend and in the tooltips when hovering different arcs
+        labels: [
+          'Approve',
+          'Pick-up',
+          'Decline',
+          'Unknown'
+        ]
+      },
+      options: {
+        title: {
+          display: true,
+          position: 'bottom',
+          text: 'Rate Transaction'
+        }
+      }
+    });
+  }
+
+  chart_init();
+  transaction_query();
+
+  $(function () {
+    $('#datetimepicker1').datetimepicker({
+      format: 'YYYY-MM-DD HH:mm:ss'
+    });
+    $('#datetimepicker2').datetimepicker({
+      format: 'YYYY-MM-DD HH:mm:ss'
+    });
+  });
+</script>

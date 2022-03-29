@@ -1,0 +1,178 @@
+<div class="row">
+  <div class="col-sm-6">
+    <div class="well">
+      <div class="row">
+        <div class="col-sm-4">
+          <label class="control-label">Tên</label>
+          <input type="text" class="form-control" id="title_query">
+        </div>
+        <div class="col-sm-4">
+          <label class="control-label">Mã</label>
+          <input type="text" class="form-control" id="id_query">
+        </div>
+        <div class="col-sm-4">
+          <label class="control-label">Tìm</label>
+          <button type="submit" class="btn fis form-control " onclick="role_get_list();">
+            <span class="glyphicon glyphicon-search"></span>
+            Tìm
+          </button>
+        </div>
+      </div>
+      <br />
+      <table class="table table-hover" id="role_table">
+        <thead class="">
+          <tr style="background-color: #4d4d4d; color: aliceblue;">
+            <th scope="col">STT</th>
+            <th scope="col">Nhóm người dùng</th>
+            <th scope="col">Mã</th>
+            <th scope="col">Mô tả</th>
+          </tr>
+        </thead>
+        <tbody id="role_tbody">
+          <tr>
+            <td scope="col">1</td>
+            <td scope="col">Quản trị</td>
+            <td scope="col">1</td>
+            <td scope="col">Nhóm người dùng quản trị vận hành</td>
+          </tr>
+          <tr>
+            <td scope="col">2</td>
+            <td scope="col">Người dùng</td>
+            <td scope="col">2</td>
+            <td scope="col">Nhóm người dùng chăm sóc khách hàng</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="text-right" id="pagination-here"></div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="row">
+      <div class="well">
+        <div class="row">
+          <div class="col-sm-3">
+            <button id="create" class="btn fis form-control " onclick="role_create_show()">
+              <span class="glyphicon glyphicon-plus"></span>
+              Tạo
+            </button>
+          </div>
+          <div class="col-sm-3">
+            <button id="edit" class="btn fis form-control " onclick="role_edit_show()">
+              <span class="glyphicon glyphicon-edit"></span>
+              Sửa
+            </button>
+          </div>
+          <div class="col-sm-3">
+            <button id="edit" class="btn fis form-control " onclick="role_permission_edit_show()">
+              <span class="glyphicon glyphicon-edit"></span>
+              Quyền
+            </button>
+          </div>
+          <div class="col-sm-6"></div>
+        </div>
+        <div id="create_box">
+          <div class="row">
+            <div class="col-sm-12">
+              <label class="control-label">Tên nhóm</label>
+              <input type="text" class="form-control" id="title_create">
+            </div>
+            <div class="col-sm-12">
+              <label class="control-label">Mô tả</label>
+              <input type="text" class="form-control" id="description_create">
+            </div>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6"></div>
+            <div class="col-sm-3">
+              <button class="btn fis form-control " onclick="role_create();">
+                <span class="glyphicon glyphicon-save"></span>
+                Lưu</button>
+            </div>
+          </div>
+        </div>
+        <div id="edit_box">
+          <div class="row">
+            <div class="col-sm-6">
+              <label class="control-label">Tên nhóm</label>
+              <input type="text" class="form-control" disable id="title_edit">
+            </div>
+            <div class="col-sm-6">
+              <label class="control-label">Mã</label>
+              <input type="text" class="form-control" disabled id="role_id_edit">
+            </div>
+            <div class="col-sm-12">
+              <label class="control-label">Mô tả</label>
+              <input type="text" class="form-control" id="description_edit">
+            </div>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-sm-3">
+            </div>
+            <div class="col-sm-6"></div>
+            <div class="col-sm-3">
+              <button class="btn fis form-control " onclick="role_edit()">
+                <span class="glyphicon glyphicon-save"></span>
+                Lưu</button>
+            </div>
+          </div>
+        </div>
+        <div id="permission_box">
+          <br />
+          <div class="row">
+            <div class="col-md-10">
+              <label class="control-label">Mã</label>
+            </div>
+            <div class="col-md-2">
+              <div style="text-align: center">
+                001
+              </div>
+            </div>
+          </div>
+          <table class="table" id="permission_table">
+            <thead>
+              <tr>
+                <th scope="col" class="form-control col-md-10">Chức năng</th>
+                <th scope="col" class="form-control col-md-2"></th>
+              </tr>
+            </thead>
+            <tbody id="role_tbody_1">
+              <tr>
+                <td scope="col"><input type="text" class="form-control" value="Quản lý chức năng vận hành"></td>
+                <td scope="col"><button class="form-control">x</button></td>
+              </tr>
+              <tr>
+                <td scope="col"><input type="text" class="form-control" value="Quản lý chức năng người dùng"></td>
+                <td scope="col"><button class="form-control">x</button></td>
+              </tr>
+              <tr>
+                <td scope="col"><input type="text" class="form-control" value="Tra cứu giao dịch"></td>
+                <td scope="col"><button class="form-control">x</button></td>
+              </tr>
+              <tr>
+                <td scope="col"><select class="form-control" id="permission_list1">
+                  </select></td>
+                <td scope="col"><button class="form-control">+</button></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="row">
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-6"></div>
+            <div class="col-md-3">
+              <button class="btn fis form-control " onclick="role_edit()">
+                <span class="glyphicon glyphicon-save"></span>
+                Lưu</button>
+            </div>
+          </div>
+          <!-- <label class="control-label">Danh sach quyen Nhóm</label>
+          <datalist id="permission_list"></datalist>
+          <select class="form-control" id="permission_list"></select> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

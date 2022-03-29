@@ -1,0 +1,374 @@
+<script>
+  var current_page = 1;
+  var page_size = 10;
+  var total_page = 1;
+  var id_edit;
+  var code_query;
+  var name_query;
+  var channel_query;
+  init();
+  function init() {
+    user_create_show();
+    user_get_list();
+    //page click action
+    $('#pagination-here').on("page", function (event, num) {
+      //show / hide content or pull via ajax etc
+      current_page = num;
+      user_get_list_page(function () { });
+    });
+
+    $('.action').on("click", function (e) {
+      e.preventDefault();
+    })
+  }
+
+  function get_channel_detail(e) {
+    let code = $(e).text();
+    gw_gui_call_api('GET', '/api/service/get?code=' + code, "",null, function (status, data, xhr) {
+        if ('success' == status) {
+          console.log(data);
+          let result = data.data.result;
+          document.getElementById('service_code_update').value = result.code || "";
+          document.getElementById('customer_code_update').value = result.partnerCode || "";
+          document.getElementById('service_name_update').value = result.title || "";
+          document.getElementById('channel_update').value = result.channel || "";
+          document.getElementById('description_update').value = result.description || "";
+          document.getElementById('service_url_update').value = result.service_url || "";
+          if (result.status == 0) {
+            document.getElementById('status_update').value = 0;
+          } else {
+            document.getElementById('status_update').value = 1;
+          }
+        }
+        else {
+          console.log(xhr.responseJSON);
+        }
+      });
+  }
+
+  function user_create_show() {
+    //document.getElementById("create_box").style.display = "block";//bo thu
+    //document.getElementById("edit_box").style.display = "none";//tai sao loi ma usermanger ko loi
+  }
+  /*function user_edit_show() {
+    document.getElementById("create_box").style.display = "none";
+    document.getElementById("edit_box").style.display = "block";
+
+    document.getElementById("role_id_edit").disabled = false;
+    document.getElementById("first_name_edit").disabled = false;
+    document.getElementById("last_name_edit").disabled = false;
+    document.getElementById("phone_edit").disabled = false;
+    document.getElementById("position_edit").disabled = false;
+    document.getElementById("status_edit").disabled = false;
+  }*/
+  function user_create() {
+    if (confirm('are you sure?')) {
+      /* let req_data = {};
+       req_data.username = document.getElementById("username_create").value;
+       req_data.first_name = document.getElementById("first_name_create").value;
+       req_data.last_name = document.getElementById("last_name_create").value;
+       req_data.phone = document.getElementById("phone_create").value;
+       req_data.position = document.getElementById("position_create").value;
+       req_data.password = gw_gui_random_string(6);
+       req_data.password_repeat = req_data.password;
+       console.log(req_data);
+       gw_gui_call_api('POST', '/api/user/create', req_data, null, function (status, data, xhr) {
+         if ('success' == status) {
+           alert('Success. Password is ' + req_data.password);
+           user_get_list_page(function () { });
+         }
+         else {
+           console.log(xhr.responseJSON);
+           alert(xhr.responseJSON.msg);
+         }
+       });*/
+    }
+  }
+  function save_channel() {
+    if (confirm('are you sure?')) {
+      /* let req_data = {};
+       req_data.username = document.getElementById("username_create").value;
+       req_data.first_name = document.getElementById("first_name_create").value;
+       req_data.last_name = document.getElementById("last_name_create").value;
+       req_data.phone = document.getElementById("phone_create").value;
+       req_data.position = document.getElementById("position_create").value;
+       req_data.password = gw_gui_random_string(6);
+       req_data.password_repeat = req_data.password;
+       console.log(req_data);
+       gw_gui_call_api('POST', '/api/user/create', req_data, null, function (status, data, xhr) {
+         if ('success' == status) {
+           alert('Success. Password is ' + req_data.password);
+           user_get_list_page(function () { });
+         }
+         else {
+           console.log(xhr.responseJSON);
+           alert(xhr.responseJSON.msg);
+         }
+       });*/
+      let req_data = {};
+      req_data.code = document.getElementById('service_code').value;
+      req_data.partnerCode = document.getElementById('customer_code').value;
+      req_data.title = document.getElementById('service_name').value;
+      req_data.channel = document.getElementById('channel').value;
+      req_data.description = document.getElementById('description').value;
+      req_data.service_url = document.getElementById('service_url').value;
+      req_data.status = document.getElementById('status').value;
+
+      gw_gui_call_api('POST', '/api/service/create', req_data, null, function (status, data, xhr) {
+        if ('success' == status) {
+          //alert('Success');
+          alert('Đã tạo thành công dịch vụ');
+          window.location.href=window.location.href;
+        }
+        else {
+          console.log(xhr.responseJSON);
+          alert(xhr.responseJSON.msg);
+        }
+      });
+      // let html = `<tr>
+      //   <td></td>
+      //   <td><a href="#" class="action" data-toggle="modal" data-target="#updateModal">${req_data.service_code}</a></td>
+      //   <td>${req_data.customer_code}</td>
+      //   <td>${req_data.service_name}</td>
+      //   <td>${req_data.channel}</td>
+      //   <td>${req_data.description}</td>
+      //   <td>${req_data.service_url}</td>
+      //   <td>${req_data.status}</td>
+      //   </tr>`;
+      // $("#transaction_tbody").append(html);
+    }
+  }
+
+  function update_channel() {
+    if (confirm('Xác nhận ?')) {
+      /* let req_data = {};
+       req_data.username = document.getElementById("username_create").value;
+       req_data.first_name = document.getElementById("first_name_create").value;
+       req_data.last_name = document.getElementById("last_name_create").value;
+       req_data.phone = document.getElementById("phone_create").value;
+       req_data.position = document.getElementById("position_create").value;
+       req_data.password = gw_gui_random_string(6);
+       req_data.password_repeat = req_data.password;
+       console.log(req_data);
+       gw_gui_call_api('POST', '/api/user/create', req_data, null, function (status, data, xhr) {
+         if ('success' == status) {
+           alert('Success. Password is ' + req_data.password);
+           user_get_list_page(function () { });
+         }
+         else {
+           console.log(xhr.responseJSON);
+           alert(xhr.responseJSON.msg);
+         }
+       });*/
+      let req_data = {};
+      req_data.code = document.getElementById('service_code_update').value;
+      req_data.partnerCode = document.getElementById('customer_code_update').value;
+      req_data.title = document.getElementById('service_name_update').value;
+      req_data.channel = document.getElementById('channel_update').value;
+      req_data.description = document.getElementById('description_update').value;
+      req_data.service_url = document.getElementById('service_url_update').value;
+      req_data.status = document.getElementById('status_update').value;
+      if(validateField())
+      {
+
+        gw_gui_call_api('PUT', '/api/service/edit', req_data, null, function (status, data, xhr) {
+          if ('success' == status) {
+            //alert('Success');
+            alert('Đã cập nhật thành công dịch vụ!');
+            window.location.href=window.location.href;
+          }
+          else {
+            console.log(xhr.responseJSON);
+            alert(xhr.responseJSON.msg);
+          }
+        });
+     }
+    }
+  }
+  function validateField() {    
+    ////
+    //let length = document.getElementById("transaction_tbody").getElementsByTagName('tr').length;
+    //    if (length < 50) {  
+      console.log("Check cac truong=");
+    var ma = document.getElementById("customer_code_update").value,
+			errors = [];
+		var mota = document.getElementById("description_update").value,
+			errors = [];
+    var ten = document.getElementById("service_name_update").value,
+			errors = [];
+			console.log("chieu dai ="+ten.length);
+    if (ma.length > 30) {
+			errors.push("Trường mã đối tác dịch vụ < 30 kí tự"); 
+		}
+		else if (mota.length > 30) {
+			errors.push("Trường mô tả dịch vụ < 30 kí tự"); 
+		}
+    else if(ten.length > 30)
+    {
+      errors.push("Trường tên dịch vụ < 30 kí tự"); 
+    }
+		
+		if (errors.length > 0) {
+			alert(errors.join("\n"));
+			return false;
+		}
+		return true;
+	}
+  /*function user_edit() {
+    if(confirm('are you sure?'))
+    {
+      let req_data = {};
+      req_data.username = document.getElementById("username_edit").value;
+      req_data.role_id = document.getElementById("role_id_edit").value;
+      req_data.first_name = document.getElementById("first_name_edit").value;
+      req_data.last_name = document.getElementById("last_name_edit").value;
+      req_data.phone = document.getElementById("phone_edit").value;
+      req_data.position = document.getElementById("position_edit").value;
+      req_data.status = document.getElementById("status_edit").value;
+      console.log(req_data);
+      gw_gui_call_api('POST', '/api/user/edit_info', req_data, null, function (status, data, xhr) {
+        if ('success' == status) {
+          alert('success');
+          user_get_list_page(function () { });
+        }
+        else {
+          console.log(data);
+          alert(xhr.responseJSON.msg);
+        }
+      });
+    }
+  }*/
+  /*function user_resetpass() {
+    if(confirm('are you sure?'))
+    {
+      let req_data = {};
+      req_data.username = document.getElementById("username_edit").value;
+      req_data.password = gw_gui_random_string(6);
+      req_data.password_repeat = req_data.password;
+      gw_gui_call_api('POST', '/api/user/change_password', req_data, null, function (status, data, xhr) {
+        if ('success' == status) {
+          alert('Success. Password is ' + req_data.password);
+        }
+        else {
+          console.log(xhr.responseJSON);
+          alert(xhr.responseJSON.msg);
+        }
+      });
+    }
+  }*/
+  function user_get_list() {
+    current_page = 1;
+    code_query = document.getElementById("code_query").value;
+    name_query = document.getElementById("name_query").value;
+    channel_query = document.getElementById("channel_query").value;
+    user_get_list_page(function (data) {
+      // total_page = Math.ceil(data.count / page_size);
+      //total_page = Math.ceil(100 / page_size);
+      //init_pagination();
+    })
+  }
+
+  function user_get_list_page(callback) {
+    let req_data;
+    req_data = `code=${code_query}&name=${name_query}&channel=${channel_query}&page=${current_page - 1}&page_size=${page_size}`;
+    //req_data = `username=${username_query}&role_id=${role_id_query}&page=${current_page - 1}&page_size=${page_size}`;
+    //req_data = "";
+    //gw_gui_call_api('GET', '/api/user/get_list', req_data, null, function (status, data, xhr) {
+    gw_gui_call_api('GET', '/api/service/getList', req_data, null, function (status, data, xhr) {
+      if ('success' == status) {
+        let html_data = '';
+        for (let i = 0; i < data.data.result.length; i++) {
+          let statusService = "";
+          if(data.data.result[i].status == 1){statusService = "Hiệu Lực"}
+          if(data.data.result[i].status == 0){statusService = "Hết Hiệu Lực"}
+          html_data += `<tr>
+        <td><a href="#" class="action" onclick="get_channel_detail(this)" data-toggle="modal" data-target="#updateModal">${data.data.result[i].code}</a></td>
+        <td>${data.data.result[i].partnerCode || ""}</td>
+        <td>${data.data.result[i].title || ""}</td>
+        <td>${data.data.result[i].channel || ""}</td>
+        <td>${data.data.result[i].description || ""}</td>
+        <td>${data.data.result[i].pathService || ""}</td>
+        <td>${statusService || ""}</td>
+        </tr>`;
+        }
+        ///result[i].username
+        ///result[i].id
+        ///result[i].role_id
+        document.getElementById("transaction_tbody").innerHTML = html_data;
+        //user_table_onclick();
+        callback(data);
+      }
+      else {
+        console.log(data);
+        user_table_onclick();
+        callback(data);
+        alert(xhr.responseJSON.msg);
+      }
+    });
+  }
+
+  function user_table_onclick() {
+    gw_gui_table_onclick("user_table", function (rowSelected) {
+      let req_data;
+      console.log('here')
+      username_edit = rowSelected.cells[0].innerHTML;
+      //id_query = rowSelected.cells[0].innerHTML;
+      //req_data = `username=${username_edit}`;
+      req_data = `id=${username_edit}`;
+      console.log(username_edit);
+      //req_data =   'id=${id_query}';
+      //document.getElementById("create_box").style.display = "none";
+      //document.getElementById("edit_box").style.display = "block";
+
+      gw_gui_call_api('GET', '/api/service/get', req_data, null, function (status, data, xhr) {
+        if ('success' == status) {
+          //       document.getElementById("role_id_edit").disabled = true;
+          //       document.getElementById("first_name_edit").disabled = true;
+          //       document.getElementById("last_name_edit").disabled = true;
+          //       document.getElementById("phone_edit").disabled = true;
+          //       document.getElementById("position_edit").disabled = true;
+          //       document.getElementById("status_edit").disabled = true;
+          console.log(data);
+          document.getElementById("username_create").value = data.data.result.USERNAME;
+          //document.getElementById("username_edit").value = data.data.result.USERNAME;
+          //document.getElementById("role_id_edit").value = data.result.role_id;
+          // document.getElementById("first_name_edit").value = data.data.result.FIRST_NAME;
+          // document.getElementById("last_name_edit").value = data.data.result.LAST_NAME;
+          // document.getElementById("phone_edit").value = data.data.result.PHONE;
+          //document.getElementById("position_edit").value = data.result.position;
+          //document.getElementById("status_edit").value = data.result.status;
+          // document.getElementById("last_login_edit").value = data.data.result.LAST_LOGIN;
+          // document.getElementById("user_created_edit").value = data.data.result.USER_CREATED;
+          // document.getElementById("user_modified_edit").value = data.data.result.USER_MODIFIED;
+          // document.getElementById("date_created_edit").value = data.data.result.DATE_CREATED;
+          // document.getElementById("date_modified_edit").value = data.data.result.DATE_CREATED;
+        }
+        else {
+          console.log(data);
+          alert(xhr.responseJSON.msg);
+        }
+      });
+    });
+  }
+
+  function init_pagination() {
+    $('#pagination-here').bootpag({
+      total: total_page,
+      page: current_page,
+      maxVisible: 2,
+      leaps: false,
+      firstLastUse: true,
+      next: '>',
+      prev: '<',
+      first: '<<',
+      last: '>>',
+      wrapClass: 'pagination',
+      activeClass: 'active',
+      disabledClass: 'disabled',
+      nextClass: 'next',
+      prevClass: 'prev',
+      lastClass: 'last',
+      firstClass: 'first'
+    })
+  }
+</script>

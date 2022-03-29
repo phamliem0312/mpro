@@ -1,0 +1,189 @@
+<div class="row">
+  <div class="row col-md-12" style="margin-bottom: 5px; margin-top: 5px;">
+    <div class="col-md-6">
+      <b style="color: red;" id="count_show"></b>
+    </div>
+    <div class="col-md-3"></div>
+    <div class="col-md-3">
+      <div class="col-sm-6">
+        <button class="btn fis form-control" onclick=""
+        style="text-align: center; background-color: green; color: white;">
+            <span class="glyphicon glyphicon-export"></span>
+            Xuất excel</button>
+      </div>
+      <div class="col-sm-6">
+        <button class="btn fis form-control" onclick="" data-toggle="modal" data-target="#myModal"
+        style="text-align: center; background-color: blue; color: white;">
+            <span class="glyphicon glyphicon-filter"></span>
+            Lọc</button>
+      </div>
+    </div>
+  </div>
+  <!-- The Modal -->
+  <div class="modal fade" id="myModal">
+    <div class="modal-dialog" style="width: 50%;">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header" style="color: blue;">
+          <h3 class="modal-title">Lọc<button type="button" class="close" data-dismiss="modal"
+              style="color: red;">×</button></h3>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body col-md-12" style="margin-bottom: 5px;">
+          <div class='form-group col-sm-12' style="margin-bottom: 5px;">
+            <label>Dịch vụ</label>
+            <select name="" id="service_query" class="form-control">
+              <option value="credit">
+                Thanh toán di động trả trước
+              </option>
+              <option value="debit">Thanh toán di động trả sau</option>
+              <option value="return">Thanh toán tiền điện</option>
+              <option value="request_to_pay">Thanh toán tiền nước</option>
+            </select>
+          </div>
+          <div class='form-group col-sm-12' style="margin-bottom: 5px;">
+            <label>Hệ thống gọi đến</label>
+            <select class="form-control" name="" id="direct_query">
+              <option value="1">MyMobiFone</option>
+              <option value="2">Mpro</option>
+            </select>
+          </div>
+          <div class='form-group col-sm-12' style="margin-bottom: 5px;">
+            <label>Mã giao dịch</label>
+            <input type="text" name="" id="msgid_query" class="form-control">
+          </div>
+          <!--<div class='form-group col-sm-2'>
+                            <button class="form-control" onclick="transaction_get_list()">Search</button>
+                        </div>-->
+          <div class='form-group col-sm-12' style="margin-bottom: 5px;">
+            <label>TGTT/BankHub/Ví</label>
+            <select class="form-control" name="" id="termid_query">
+              <option value="null"></option>
+              <option value="VTCBVNVN">Vietcombank</option>
+              <option value="2">Vietinbank</option>
+            </select>
+          </div>
+          <div class='form-group col-sm-12' style="margin-bottom: 5px;">
+            <label>Trạng thái</label>
+            <select class="form-control" id="error_query">
+              <option value="null"></option>
+              <option value="httpstatus">Thành công</option>
+              <option value="nack">Không thành công</option>
+            </select>
+          </div>
+          <!-- <div class='form-group col-sm-12' style="margin-bottom: 5px;">
+                        <label>Tài khoản</label>
+                        <input type="text" name="" class="form-control" id="accnumber_query">
+                    </div> -->
+          <div class="col-md-12" style="margin-bottom: 5px;">
+            <label for="">Từ</label>
+            <div class='input-group date' id='datetimepicker1'>
+              <input type='text' class="form-control" placeholder="From" value="2020-01-01T00:00:00" />
+              <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+              </span>
+            </div>
+          </div>
+          <div class="form-group col-md-12" style="margin-bottom: 5px;">
+            <label for="">Đến</label>
+            <div class='input-group date' id='datetimepicker2'>
+              <input type='text' class="form-control" placeholder="To" />
+              <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" onclick="init()" class="btn" data-dismiss="modal"
+            style="background-color: rgb(95, 95, 255); color: white;"><i class="fa fa-search"></i></button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="myModal1">
+    <div class="modal-dialog" style="width: 90%;">
+      <div class="modal-content">
+        <div class="modal-header" style="color: blue; height: 36px;">
+          <h8 class="modal-title"><button
+              style=" background-color: rgb(240, 240, 240); border: none;border-radius: 3px;" onclick="detail()"
+              id="get_detail">Detail</button><button id="get_process"
+              style="border-radius: 3px;background-color: white; border: none;" onclick="process()">Process</button>
+            <button id="get_audit" style="border-radius: 3px;background-color: white;border: none;"
+              onclick="audit()">Audit</button>
+            <button type="button" class="close" data-dismiss="modal" style="color: red;"
+              onclick="close_detail()">×</button>
+          </h8>
+        </div>
+        <div class="modal-body col-md-12"
+          style="margin-bottom: 5px;background-color: rgb(240, 240, 240);border-top: none; height: 1600px;">
+          <table class="table table-hover" id="detail_tb">
+          </table>
+          <table class="table table-hover" id="process_tb" style="display: none;">
+            <tr>
+              <th>AckNak</th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>Status</th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>Camt.025.001.04</th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>Http response status</th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>Repeat</th>
+              <td></td>
+            </tr>
+          </table>
+          <table class="table table-hover" id="audit_tb" style="display: none;">
+            <tr>
+              <th>Creator</th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>Approver</th>
+              <td></td>
+            </tr>
+            <tr>
+              <th>Create Date</th>
+              <td></td>
+            </tr>
+          </table>
+        </div>
+        <div class="modal-footer">
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <table class="table" id="transaction_table">
+    <thead style="background-color: blue; color: white; font-size: 12px;">
+      <tr style="background-color: #4d4d4d;">
+        <th>STT</th>
+        <th>Mã</th>
+        <th>Thời gian</th>
+        <th>Hệ thống gọi đến</th>
+        <th>TGTT/BankHub/Ví</th>
+        <th>Dịch vụ</th>
+        <th>Mã phản hồi</th>
+        <th>Số tiền</th>
+      </tr>
+    </thead>
+    <tbody id="transaction_tbody">
+    </tbody>
+  </table>
+  <div class="col-md-12">
+    <div class="text-right" id="pagination-here"></div>
+  </div>
+</div>

@@ -1,0 +1,75 @@
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    var socket = io();
+    let index = 50;
+    socket.on("message", (data)=>{
+        index--;
+        let msg = JSON.parse(data.message);
+        let length = document.getElementById("transaction_tbody").getElementsByTagName('tr').length;
+        if (length < 50) {
+            let tbody = $('#transaction_tbody').html();
+            if (msg.status == "RJCT") {
+                let new_tbody = `<tr id="${index}">
+                <td style="color: red">${msg.msgid}</td>
+                <td style="color: red">${msg.time}</td>
+                <td style="color: red">${msg.sender}</td>
+                <td style="color: red">${msg.receiver}</td>
+                <td style="color: red">${msg.service}</td>
+                <td style="color: red">${msg.mit}</td>
+                <td style="color: red">${msg.ccy}</td>
+                <td style="color: red">${msg.amount}</td>
+                <td style="color: red">${msg.account}</td>
+                <td style="color: red">${msg.status}</td>
+        </tr>` + tbody;
+        $('#transaction_tbody').html(new_tbody); 
+            } else {
+                let new_tbody = `<tr id="${index}">
+            
+                    <td style="color: black">${msg.msgid}</td>
+            <td style="color: black">${msg.time}</td>
+            <td style="color: black">${msg.sender}</td>
+            <td style="color: black">${msg.receiver}</td>
+            <td style="color: black">${msg.service}</td>
+            <td style="color: black">${msg.mit}</td>
+            <td style="color: black">${msg.ccy}</td>
+            <td style="color: black">${msg.amount}</td>
+            <td style="color: black">${msg.account}</td>
+            <td style="color: black">${msg.status}</td>
+        </tr>` + tbody;
+        $('#transaction_tbody').html(new_tbody); 
+            }  
+        } else {
+        for (let i = 49; i >= 0; i--) {
+                if (i > 0) {
+                    $("#" + i).html($("#" + (i - 1)).html());
+                } else {
+                    if (msg.status == "RJCT") {
+                        $("#0").html(`
+            <td style="color: red">${msg.msgid}</td>
+            <td style="color: red">${msg.time}</td>
+            <td style="color: red">${msg.sender}</td>
+            <td style="color: red">${msg.receiver}</td>
+            <td style="color: red">${msg.service}</td>
+            <td style="color: red">${msg.mit}</td>
+            <td style="color: red">${msg.ccy}</td>
+            <td style="color: red">${msg.amount}</td>
+            <td style="color: red">${msg.account}</td>
+            <td style="color: red">${msg.status}</td>`);
+                    } else {
+                        $("#0").html(`
+            <td style="color: black">${msg.msgid}</td>
+            <td style="color: black">${msg.time}</td>
+            <td style="color: black">${msg.sender}</td>
+            <td style="color: black">${msg.receiver}</td>
+            <td style="color: black">${msg.service}</td>
+            <td style="color: black">${msg.mit}</td>
+            <td style="color: black">${msg.ccy}</td>
+            <td style="color: black">${msg.amount}</td>
+            <td style="color: black">${msg.account}</td>
+            <td style="color: black">${msg.status}</td>`);
+                    }
+                }
+            }
+        }
+    });
+</script>

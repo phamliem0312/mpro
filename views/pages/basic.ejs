@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% var title = typeof title != 'undefined' ? title : 'Default'; %>
+        <% var head_name = typeof head_name != 'undefined' ? head_name : '../partials/head'; %>
+            <% var body_name = typeof body_name != 'undefined' ? body_name : '../script/null'; %>
+                <% var script_name = typeof script_name != 'undefined' ? script_name : '../script/null'; %>
+                    <%- include(head_name, {title: title}); %>
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <div id="content">
+            <header>
+                <%- include('../partials/menu'); %>
+            </header>
+
+            <main>
+                <div class="container-fluid">
+                    <h3 style="color: rgb(255, 72, 0);">
+                        <%= title %>
+                    </h3>
+                    <img class=" margin-bottom-5" src="/img/normal_line_fpt_color.png" />
+                    <%- include(body_name); %>
+                </div>
+            </main>
+
+            <footer>
+                <div class="container">
+                    <div class="copyright text-center">
+                        <span>Copyright &copy; FIS 2022</span>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+    <%- include(script_name); %>
+</body>
+
+</html>
